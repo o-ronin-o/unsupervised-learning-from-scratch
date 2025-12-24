@@ -20,10 +20,15 @@ class NeuralNetwork:
                  learning_rate: float = 0.01,
                  l2_lambda: float = 0.0,
                  scheduler = None):
-        self.layers = self.build_neural_network(layer_config)
+        
+        # FIX: We must set these variables BEFORE building the layers
         self.learning_rate = learning_rate
         self.l2_lambda = l2_lambda
         self.scheduler = scheduler
+        
+        # Now we can safely build the layers
+        self.layers = self.build_neural_network(layer_config)
+        
         self.history = {
             'train_loss': [],
             'val_loss': [],
@@ -41,6 +46,8 @@ class NeuralNetwork:
         grad = grad_loss
         for layer in reversed(self.layers):
             grad = layer.backward(grad)
+        return grad  # <--- THIS WAS THE MISSING KEY!
+
     def update_parameters(self):
         if self.scheduler:
             lr = self.scheduler.get_lr()
@@ -48,6 +55,7 @@ class NeuralNetwork:
             lr = self.learning_rate
         for layer in self.layers:
             layer.update_parameters(lr) 
+
     def compute_loss(self, y_true, y_pred):
         return MSELoss.forward(y_true, y_pred)
     
@@ -141,4 +149,3 @@ class NeuralNetwork:
             )
             layers.append(layer)
         return layers
-        

@@ -64,7 +64,7 @@ class PCA:
         """
         
         X_centered = X - self.mean
-        return X_centered @ self.components 
+        return X_centered @ self.components.T 
     
     def inverse_transform(self, Z):
         """
@@ -72,7 +72,7 @@ class PCA:
         
         """
         
-        return Z @ self.components.T + self.mean
+        return Z @ self.components + self.mean
     
     def reconstruction_error(self, X):
         
@@ -125,4 +125,3 @@ class PCA:
                   f"Cum% = {cum_pct:.2f}%")
         
         print("=" * 50)
-
