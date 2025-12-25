@@ -176,6 +176,24 @@ def normalized_mutual_info_score(labels_true, labels_pred):
                 
     return 2 * MI / (H_true + H_pred)
 
+def confusion_matrix_manual(y_true, y_pred):
+    # Ensure integer labels
+    y_true = y_true.astype(int)
+    y_pred = y_pred.astype(int)
+    
+    # Get the number of unique classes/clusters
+    n_classes = np.max(y_true) + 1
+    n_clusters = np.max(y_pred) + 1
+    
+    # Initialize matrix
+    cm = np.zeros((n_classes, n_clusters), dtype=int)
+    
+    # Fill matrix
+    for t, p in zip(y_true, y_pred):
+        cm[t, p] += 1
+        
+    return cm
+    
 def calculate_aic(bic, n_samples):
     # Quick helper: AIC = BIC - log(n)*k + 2*k
     # But strictly: AIC = 2k - 2ln(L)
