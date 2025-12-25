@@ -1,9 +1,7 @@
 import numpy as np
 
 def purity_score(y_true, y_pred):
-    """
-    Calculate the purity score for the given cluster assignments and ground truth labels.
-    """
+    
     # Create a confusion matrix
     contingency_matrix = np.zeros((np.max(y_true) + 1, np.max(y_pred) + 1))
     for i in range(len(y_true)):
@@ -13,9 +11,7 @@ def purity_score(y_true, y_pred):
     return np.sum(np.amax(contingency_matrix, axis=0)) / np.sum(contingency_matrix)
 
 def silhouette_score_manual(X, labels):
-    """
-    Compute the mean Silhouette Coefficient of all samples.
-    """
+    
     n_samples = X.shape[0]
     unique_labels = np.unique(labels)
     
@@ -52,7 +48,6 @@ def silhouette_score_manual(X, labels):
         
     return np.mean(silhouette_vals)
 
-# --- Davies-Bouldin Index ---
 def davies_bouldin_score(X, labels):
     unique_labels = np.unique(labels)
     n_clusters = len(unique_labels)
@@ -83,7 +78,6 @@ def davies_bouldin_score(X, labels):
         
     return score / n_clusters
 
-# --- Calinski-Harabasz Index ---
 def calinski_harabasz_score(X, labels):
     n_samples = X.shape[0]
     unique_labels = np.unique(labels)
@@ -112,7 +106,6 @@ def calinski_harabasz_score(X, labels):
     
     return (SS_B / (n_clusters - 1)) / (SS_W / (n_samples - n_clusters))
 
-# --- NEW: Adjusted Rand Index ---
 def adjusted_rand_score(labels_true, labels_pred):
     # Use the contingency matrix logic
     classes = np.unique(labels_true)
@@ -145,7 +138,6 @@ def adjusted_rand_score(labels_true, labels_pred):
         
     return (sum_nij_comb - expected_index) / (max_index - expected_index)
 
-# --- NEW: Normalized Mutual Information ---
 def normalized_mutual_info_score(labels_true, labels_pred):
     # Entropy calculation
     def entropy(labels):
@@ -195,8 +187,4 @@ def confusion_matrix_manual(y_true, y_pred):
     return cm
     
 def calculate_aic(bic, n_samples):
-    # Quick helper: AIC = BIC - log(n)*k + 2*k
-    # But strictly: AIC = 2k - 2ln(L)
-    # Since we have BIC = k*ln(n) - 2ln(L)
-    # We can't perfectly convert without k, but we can compute it inside the notebook using the log-likelihood
     pass

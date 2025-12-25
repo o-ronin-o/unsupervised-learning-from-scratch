@@ -31,9 +31,6 @@ class GMM:
 
         self.log_likelihoods = []
 
-    # --------------------------------------------------
-    # Initialization
-    # --------------------------------------------------
     def _init_covariances(self):
         if self.covariance_type == "full":
             self.sigma = np.array([np.eye(self.dim) for _ in range(self.k)])
@@ -46,9 +43,7 @@ class GMM:
         else:
             raise ValueError("Invalid covariance_type")
 
-    # --------------------------------------------------
-    # E-step
-    # --------------------------------------------------
+
     def _e_step(self, X):
         N = X.shape[0]
         log_resp = np.zeros((N, self.k))
@@ -59,9 +54,6 @@ class GMM:
         log_norm = self._logsumexp(log_resp, axis=1)
         self.z = np.exp(log_resp - log_norm[:, None])
 
-    # --------------------------------------------------
-    # M-step
-    # --------------------------------------------------
     def _m_step(self, X):
         Nk = self.z.sum(axis=0)
 
@@ -101,9 +93,6 @@ class GMM:
                     self.z[:, k] * np.sum(diff**2, axis=1)
                 ).sum() / (Nk[k] * self.dim) + self.reg_covar
 
-    # --------------------------------------------------
-    # Log Gaussian density
-    # --------------------------------------------------
     def _log_gaussian(self, X, k):
         if self.covariance_type == "full":
             return multivariate_normal.logpdf(X, self.mu[k], self.sigma[k])
@@ -125,18 +114,12 @@ class GMM:
                 + np.sum((X - self.mu[k])**2, axis=1) / var
             )
 
-    # --------------------------------------------------
-    # Log-likelihood
-    # --------------------------------------------------
     def log_likelihood(self, X):
         log_prob = np.zeros((X.shape[0], self.k))
         for k in range(self.k):
             log_prob[:, k] = np.log(self.pi[k] + 1e-12) + self._log_gaussian(X, k)
         return np.sum(self._logsumexp(log_prob, axis=1))
 
-    # --------------------------------------------------
-    # Fit EM
-    # --------------------------------------------------
     def fit(self, X):
         prev_ll = None
 
@@ -153,9 +136,6 @@ class GMM:
 
         return self
 
-    # --------------------------------------------------
-    # Utility: log-sum-exp
-    # --------------------------------------------------
     @staticmethod
     def _logsumexp(a, axis=None):
         a_max = np.max(a, axis=axis, keepdims=True)
